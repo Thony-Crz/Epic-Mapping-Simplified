@@ -2,6 +2,7 @@ import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 const isProd = process.env.NODE_ENV === 'production';
+const basePath = '/Epic-Mapping-Simplified';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -23,7 +24,7 @@ const config = {
 		paths: {
 			// IMPORTANT: base for GitHub Pages project site
 			// In production, site is under /Epic-Mapping-Simplified
-			base: isProd ? '/Epic-Mapping-Simplified' : ''
+			base: isProd ? basePath : ''
 		}
 	}
 };
