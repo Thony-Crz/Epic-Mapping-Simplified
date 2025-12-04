@@ -68,6 +68,11 @@
 		if (linkModeEnabled) {
 			return;
 		}
+		// Don't start drag if clicking on a button
+		const target = e.target as HTMLElement;
+		if (target.tagName === 'BUTTON') {
+			return;
+		}
 		if (!isEditing) {
 			onDragStart(card, e);
 		}
@@ -109,7 +114,8 @@
 		startEdit();
 	}
 
-	function deleteCard() {
+	function deleteCard(e: MouseEvent) {
+		e.stopPropagation();
 		const hasChildren = allCards.some(c => c.parentId === card.id);
 		const message = hasChildren 
 			? 'This will delete this card and all its children. Are you sure?'
@@ -119,7 +125,8 @@
 		}
 	}
 
-	function unlinkFromParent() {
+	function unlinkFromParent(e: MouseEvent) {
+		e.stopPropagation();
 		if (confirm('Unlink this card from its parent?')) {
 			cardsStore.unlinkCard(card.id);
 		}
