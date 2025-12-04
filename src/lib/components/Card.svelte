@@ -68,9 +68,9 @@
 		if (linkModeEnabled) {
 			return;
 		}
-		// Don't start drag if clicking on a button
+		// Don't start drag if clicking on a button or its children
 		const target = e.target as HTMLElement;
-		if (target.tagName === 'BUTTON') {
+		if (target.closest('button')) {
 			return;
 		}
 		if (!isEditing) {
