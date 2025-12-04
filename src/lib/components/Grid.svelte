@@ -115,15 +115,22 @@
 				return;
 			}
 			
-			// Check for circular reference
-			let currentParent = parent;
-			while (currentParent) {
-				if (currentParent.id === child.id) {
+			// Check for circular reference - build parent map for O(1) lookup
+			const parentMap = new Map<string, string>();
+			cards.forEach(c => {
+				if (c.parentId) {
+					parentMap.set(c.id, c.parentId);
+				}
+			});
+			
+			let currentId: string | undefined = parent.id;
+			while (currentId) {
+				if (currentId === child.id) {
 					alert('Cannot create circular reference');
 					linkSource = null;
 					return;
 				}
-				currentParent = cards.find(c => c.id === currentParent.parentId) as CardType;
+				currentId = parentMap.get(currentId);
 			}
 			
 			// Perform the link

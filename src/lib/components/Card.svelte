@@ -29,21 +29,34 @@
 		card.parentId ? allCards.find(c => c.id === card.parentId) : undefined
 	);
 
-	// Get children counts
+	// Get children counts - memoized by building lookup maps
 	let childrenCounts = $derived(() => {
 		if (card.type === 'epic') {
-			const rules = allCards.filter(c => c.parentId === card.id && c.type === 'rule');
-			const rulesCount = rules.length;
+			// Build a map of children by parent ID for O(1) lookup
+			const childrenByParent = new Map<string, CardType[]>();
+			allCards.forEach(c => {
+				if (c.parentId) {
+					const children = childrenByParent.get(c.parentId) || [];
+					children.push(c);
+					childrenByParent.set(c.parentId, children);
+				}
+			});
+			
+			const rules = childrenByParent.get(card.id)?.filter(c => c.type === 'rule') || [];
 			let examplesCount = 0;
 			let questionsCount = 0;
+			
 			rules.forEach(rule => {
-				examplesCount += allCards.filter(c => c.parentId === rule.id && c.type === 'example').length;
-				questionsCount += allCards.filter(c => c.parentId === rule.id && c.type === 'question').length;
+				const ruleChildren = childrenByParent.get(rule.id) || [];
+				examplesCount += ruleChildren.filter(c => c.type === 'example').length;
+				questionsCount += ruleChildren.filter(c => c.type === 'question').length;
 			});
-			return { rules: rulesCount, examples: examplesCount, questions: questionsCount };
+			
+			return { rules: rules.length, examples: examplesCount, questions: questionsCount };
 		} else if (card.type === 'rule') {
-			const examplesCount = allCards.filter(c => c.parentId === card.id && c.type === 'example').length;
-			const questionsCount = allCards.filter(c => c.parentId === card.id && c.type === 'question').length;
+			const children = allCards.filter(c => c.parentId === card.id);
+			const examplesCount = children.filter(c => c.type === 'example').length;
+			const questionsCount = children.filter(c => c.type === 'question').length;
 			return { examples: examplesCount, questions: questionsCount };
 		}
 		return null;
