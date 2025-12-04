@@ -183,7 +183,33 @@ npm run test:ui
 
 ## Deployment
 
+The app is configured for static deployment and supports multiple platforms:
+
+### GitHub Pages
+
 The app is configured for static deployment to GitHub Pages using GitHub Actions. Push to the `main` branch to automatically deploy.
+
+The GitHub Actions workflow sets `GITHUB_PAGES=true` to ensure the correct base path is used.
+
+### Vercel
+
+The app can be deployed to Vercel with zero configuration:
+
+1. **Import your repository** to Vercel
+2. Vercel will automatically detect SvelteKit and use the correct settings
+3. Deploy!
+
+Alternatively, you can use the Vercel CLI:
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+```
+
+The `vercel.json` configuration file is included for optimal deployment settings.
 
 ## Technologies
 
@@ -191,7 +217,7 @@ The app is configured for static deployment to GitHub Pages using GitHub Actions
 - **TypeScript** - Type safety
 - **Vitest** - Testing framework
 - **@sveltejs/adapter-static** - Static site generation
-- **GitHub Pages** - Deployment
+- **GitHub Pages & Vercel** - Deployment platforms
 
 ## License
 
