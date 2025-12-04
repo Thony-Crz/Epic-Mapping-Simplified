@@ -46,7 +46,7 @@
 
 <div class="toolbar">
 	<div class="toolbar-section logo-section">
-		<img src={logo} alt="Example Mapping Logo" class="toolbar-logo" />
+		<img src={logo} alt="Example Mapping logo showing hierarchical post-it note structure with Epic, Rule, Example and Question cards" class="toolbar-logo" />
 		<h2 class="app-title">Example Mapping</h2>
 	</div>
 	<div class="toolbar-section">
