@@ -1,19 +1,128 @@
 # Epic-Mapping-Simplified
 
-Example Mapping application built with SvelteKit - An offline, drag-and-drop tool for managing Example Mapping sessions.
+Example Mapping application built with SvelteKit - An offline, drag-and-drop tool for managing Example Mapping sessions with **hierarchical structure support**.
 
 ![Example Mapping in action](https://github.com/user-attachments/assets/a93da00a-c553-45cb-b661-cb7bc58dda88)
 
 ## Features
 
 - 🎯 **Four Card Types**: Epic (purple), Rule (blue), Example (green), Question (red)
+- 🔗 **Hierarchical Structure**: Link cards in a hierarchy (Epic → Rules → Examples/Questions)
+- 📊 **Visual Indicators**: Parent links, children counts, and badges showing relationships
 - ✏️ **Inline Editing**: Double-click any card to edit its content
 - 🖱️ **Drag & Drop**: Move cards around using pointer events
-- 💾 **Import/Export**: Save and load your mappings as JSON files
-- 🗑️ **Card Deletion**: Remove cards with a single click
+- 💾 **Import/Export**: Save and load your mappings in two formats:
+  - **Flat JSON**: Traditional format with all cards in a single array
+  - **Nested JSON**: Hierarchical format preserving parent-child relationships
+- 🔗 **Link Mode**: Interactive mode to create parent-child relationships between cards
+- 🗑️ **Smart Deletion**: Deleting a parent card also removes its children
 - 📱 **Offline First**: Works completely offline, no backend required
 - 🎨 **Grid Background**: Visual grid for better organization
 - ✅ **Fully Tested**: Comprehensive test coverage with Vitest
+
+## Hierarchical Structure
+
+The application supports a three-level hierarchy:
+
+```
+Epic (Purple)
+  └── Rule (Blue)
+        ├── Example (Green)
+        └── Question (Red)
+```
+
+### Visual Indicators
+
+- **Parent Badge**: Cards show their parent with format `↑ type: Parent Name`
+- **Children Counts**: Parent cards display badges showing:
+  - Epics: `2 📘` (rules), `3 ✅` (examples), `4 ❓` (questions)
+  - Rules: `2 ✅` (examples), `3 ❓` (questions)
+- **Unlink Button**: `⛓️‍💥` button to remove parent-child relationship
+
+### Linking Cards
+
+1. Click the **🔗 Link Cards** button in the toolbar
+2. Click a **child card** (the card you want to link)
+3. Click a **parent card** (the card to link to)
+4. The relationship is created automatically with validation
+
+**Hierarchy Rules:**
+- Epic cards cannot have parents
+- Rules can only be linked to Epics
+- Examples and Questions can only be linked to Rules
+
+## Export/Import Formats
+
+### Nested JSON Format (v2.0.0)
+
+Preserves the hierarchical structure. See [example-nested.json](./example-nested.json) for a complete example.
+
+```json
+{
+  "version": "2.0.0",
+  "epics": [
+    {
+      "id": "epic-uuid",
+      "title": "Epic A",
+      "rules": [
+        {
+          "id": "rule-uuid",
+          "title": "Rule 1",
+          "examples": [
+            { "id": "ex-uuid", "text": "Example 1" }
+          ],
+          "questions": [
+            { "id": "q-uuid", "text": "Question 1" }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Flat JSON Format (v1.0.0)
+
+Legacy format with all cards in a flat array:
+
+```json
+{
+  "version": "1.0.0",
+  "cards": [
+    {
+      "id": "1",
+      "type": "epic",
+      "content": "Epic 1",
+      "position": { "x": 0, "y": 0 },
+      "parentId": "optional-parent-id"
+    }
+  ]
+}
+```
+
+### Import Validation
+
+The nested import includes comprehensive validation:
+- ✅ Checks for missing or invalid IDs
+- ✅ Detects duplicate IDs across all entities
+- ✅ Validates required fields (title, text)
+- ✅ Ensures proper array structures
+- ✅ Provides clear error messages for invalid data
+- ✅ Prevents data corruption on import failures
+
+## Screenshots
+
+### Initial Interface
+![Initial UI](https://github.com/user-attachments/assets/746e6beb-f826-498f-83a0-659a540c0f62)
+*Clean toolbar with card creation buttons and import/export options*
+
+### Hierarchical Structure Display
+![Hierarchical Structure](https://github.com/user-attachments/assets/45c3d5fd-8b65-4a7f-a907-56d5e0d27b70)
+*Cards showing parent relationships and children counts with badges*
+
+### Link Mode
+![Link Mode Active](https://github.com/user-attachments/assets/9683a22d-e375-47aa-88af-99c38e054a10)
+*Interactive linking mode for creating parent-child relationships*
 
 ## Architecture
 
