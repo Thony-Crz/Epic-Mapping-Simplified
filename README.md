@@ -55,7 +55,7 @@ Epic (Purple)
 
 ### Nested JSON Format (v2.0.0)
 
-Preserves the hierarchical structure:
+Preserves the hierarchical structure. See [example-nested.json](./example-nested.json) for a complete example.
 
 ```json
 {

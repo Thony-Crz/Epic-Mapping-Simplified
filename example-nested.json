@@ -1,0 +1,50 @@
+{
+  "version": "2.0.0",
+  "epics": [
+    {
+      "id": "epic-sample-1",
+      "title": "User Authentication System",
+      "rules": [
+        {
+          "id": "rule-login",
+          "title": "Users can log in with email and password",
+          "examples": [
+            {
+              "id": "ex-login-1",
+              "text": "Valid user enters correct credentials"
+            },
+            {
+              "id": "ex-login-2",
+              "text": "System validates and grants access"
+            }
+          ],
+          "questions": [
+            {
+              "id": "q-login-1",
+              "text": "What happens if password is forgotten?"
+            }
+          ]
+        },
+        {
+          "id": "rule-session",
+          "title": "Sessions expire after 30 minutes of inactivity",
+          "examples": [],
+          "questions": [
+            {
+              "id": "q-session-1",
+              "text": "Should we support 'remember me' functionality?"
+            },
+            {
+              "id": "q-session-2",
+              "text": "What about concurrent sessions from different devices?"
+            },
+            {
+              "id": "q-session-3",
+              "text": "How do we handle session renewal?"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
