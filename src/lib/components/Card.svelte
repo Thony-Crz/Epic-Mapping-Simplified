@@ -75,15 +75,6 @@
 		}
 	}
 
-	function handleKeyPress(e: KeyboardEvent) {
-		if (e.key === 'Enter' || e.key === ' ') {
-			if (!isEditing && onCardClick) {
-				e.preventDefault();
-				onCardClick(card);
-			}
-		}
-	}
-
 	function startEdit() {
 		isEditing = true;
 		editContent = card.content;
@@ -130,9 +121,6 @@
 	style="position: absolute; left: {card.position.x}px; top: {card.position.y}px;"
 	onpointerdown={handlePointerDown}
 	onclick={handleClick}
-	onkeypress={handleKeyPress}
-	role="button"
-	tabindex="0"
 >
 	<div class="card-header">
 		<span class="card-type">{card.type.toUpperCase()}</span>
@@ -156,7 +144,7 @@
 			class="card-input"
 		></textarea>
 	{:else}
-		<div class="card-content" ondblclick={startEdit} role="button" tabindex="0">
+		<div class="card-content" ondblclick={startEdit}>
 			{card.content || 'Double-click to edit'}
 		</div>
 	{/if}
