@@ -3,6 +3,7 @@
 	import { cardsStore } from '../stores/cards';
 	import { downloadJSON, uploadJSON, downloadNestedJSON } from '../services/jsonService';
 	import { get } from 'svelte/store';
+	import logo from '$lib/assets/favicon.svg';
 
 	interface Props {
 		onAddCard: (type: CardType) => void;
@@ -44,6 +45,10 @@
 </script>
 
 <div class="toolbar">
+	<div class="toolbar-section logo-section">
+		<img src={logo} alt="Example Mapping logo showing hierarchical post-it note structure with Epic, Rule, Example and Question cards" class="toolbar-logo" />
+		<h2 class="app-title">Example Mapping</h2>
+	</div>
 	<div class="toolbar-section">
 		<h3>Add Card:</h3>
 		<button class="btn btn-epic" onclick={() => onAddCard('epic')}>Epic</button>
@@ -93,6 +98,24 @@
 		margin: 0;
 		font-size: 14px;
 		font-weight: 600;
+	}
+
+	.logo-section {
+		gap: 12px;
+	}
+
+	.toolbar-logo {
+		width: 40px;
+		height: 40px;
+		object-fit: contain;
+	}
+
+	.app-title {
+		margin: 0;
+		font-size: 18px;
+		font-weight: 700;
+		color: #374151;
+		letter-spacing: -0.5px;
 	}
 
 	.btn {
