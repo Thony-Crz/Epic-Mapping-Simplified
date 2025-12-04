@@ -99,6 +99,11 @@
 		}
 	}
 
+	function handleEditClick(e: MouseEvent) {
+		e.stopPropagation();
+		startEdit();
+	}
+
 	function deleteCard() {
 		const hasChildren = allCards.some(c => c.parentId === card.id);
 		const message = hasChildren 
@@ -124,7 +129,10 @@
 >
 	<div class="card-header">
 		<span class="card-type">{card.type.toUpperCase()}</span>
-		<button class="delete-btn" onclick={deleteCard} title="Delete">×</button>
+		<div class="card-actions">
+			<button class="edit-btn" onclick={handleEditClick} title="Edit">✏️</button>
+			<button class="delete-btn" onclick={deleteCard} title="Delete">×</button>
+		</div>
 	</div>
 	
 	{#if parentCard}
@@ -202,6 +210,12 @@
 		opacity: 0.7;
 	}
 
+	.card-actions {
+		display: flex;
+		gap: 4px;
+	}
+
+	.edit-btn,
 	.delete-btn {
 		background: rgba(0, 0, 0, 0.1);
 		border: none;
@@ -209,11 +223,19 @@
 		width: 24px;
 		height: 24px;
 		cursor: pointer;
-		font-size: 18px;
+		font-size: 16px;
 		line-height: 1;
 		padding: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
+	.delete-btn {
+		font-size: 18px;
+	}
+
+	.edit-btn:hover,
 	.delete-btn:hover {
 		background: rgba(0, 0, 0, 0.2);
 	}
