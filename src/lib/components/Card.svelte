@@ -7,9 +7,10 @@
 		onDragStart: (card: CardType, e: PointerEvent) => void;
 		onCardClick?: (card: CardType) => void;
 		allCards: CardType[];
+		linkModeEnabled?: boolean;
 	}
 
-	let { card, onDragStart, onCardClick, allCards }: Props = $props();
+	let { card, onDragStart, onCardClick, allCards, linkModeEnabled = false }: Props = $props();
 	let isEditing = $state(false);
 	let editContent = $state('');
 
@@ -63,6 +64,10 @@
 	});
 
 	function handlePointerDown(e: PointerEvent) {
+		// Don't start drag in link mode - allow clicks to work
+		if (linkModeEnabled) {
+			return;
+		}
 		if (!isEditing) {
 			onDragStart(card, e);
 		}
