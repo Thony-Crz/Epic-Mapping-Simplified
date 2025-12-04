@@ -75,15 +75,6 @@
 		}
 	}
 
-	function handleKeyPress(e: KeyboardEvent) {
-		if (e.key === 'Enter' || e.key === ' ') {
-			if (!isEditing && onCardClick) {
-				e.preventDefault();
-				onCardClick(card);
-			}
-		}
-	}
-
 	function startEdit() {
 		isEditing = true;
 		editContent = card.content;
