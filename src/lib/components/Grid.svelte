@@ -153,6 +153,7 @@
 			onDragStart={handleDragStart} 
 			onCardClick={handleCardClick}
 			allCards={cards}
+			linkModeEnabled={linkMode}
 		/>
 	{/each}
 </div>
