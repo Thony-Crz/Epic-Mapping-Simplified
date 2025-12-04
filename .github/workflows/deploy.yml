@@ -33,6 +33,7 @@ jobs:
       - name: Build
         env:
           NODE_ENV: production
+          GITHUB_PAGES: true
         run: npm run build
 
       - name: Upload artifact

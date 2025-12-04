@@ -2,6 +2,7 @@ import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 const isProd = process.env.NODE_ENV === 'production';
+const isGitHubPages = process.env.GITHUB_PAGES === 'true';
 const basePath = '/Epic-Mapping-Simplified';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -23,8 +24,9 @@ const config = {
 		}),
 		paths: {
 			// IMPORTANT: base for GitHub Pages project site
-			// In production, site is under /Epic-Mapping-Simplified
-			base: isProd ? basePath : ''
+			// For Vercel deployment, base should be empty
+			// Only use basePath when deploying to GitHub Pages
+			base: isProd && isGitHubPages ? basePath : ''
 		}
 	}
 };
