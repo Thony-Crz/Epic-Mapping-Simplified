@@ -1,14 +1,16 @@
 <script lang="ts">
 	import type { CardType } from '../types';
 	import { cardsStore } from '../stores/cards';
-	import { downloadJSON, uploadJSON } from '../services/jsonService';
+	import { downloadJSON, uploadJSON, downloadNestedJSON } from '../services/jsonService';
 	import { get } from 'svelte/store';
 
 	interface Props {
 		onAddCard: (type: CardType) => void;
+		onLinkMode?: (enabled: boolean) => void;
 	}
 
-	let { onAddCard }: Props = $props();
+	let { onAddCard, onLinkMode }: Props = $props();
+	let linkModeEnabled = $state(false);
 
 	async function handleImport() {
 		try {
@@ -24,10 +26,20 @@
 		downloadJSON(cards);
 	}
 
+	function handleExportNested() {
+		const cards = get(cardsStore);
+		downloadNestedJSON(cards);
+	}
+
 	function handleReset() {
 		if (confirm('Are you sure you want to clear all cards?')) {
 			cardsStore.reset();
 		}
+	}
+
+	function toggleLinkMode() {
+		linkModeEnabled = !linkModeEnabled;
+		onLinkMode?.(linkModeEnabled);
 	}
 </script>
 
@@ -41,8 +53,16 @@
 	</div>
 	
 	<div class="toolbar-section">
+		<button 
+			class="btn {linkModeEnabled ? 'btn-link-active' : 'btn-secondary'}" 
+			onclick={toggleLinkMode}
+			title="Click to enable linking mode, then click a child card and a parent card to link them"
+		>
+			{linkModeEnabled ? '🔗 Linking...' : '🔗 Link Cards'}
+		</button>
 		<button class="btn btn-secondary" onclick={handleImport}>Import JSON</button>
-		<button class="btn btn-secondary" onclick={handleExport}>Export JSON</button>
+		<button class="btn btn-secondary" onclick={handleExport}>Export (Flat)</button>
+		<button class="btn btn-secondary" onclick={handleExportNested}>Export (Nested)</button>
 		<button class="btn btn-danger" onclick={handleReset}>Clear All</button>
 	</div>
 </div>
@@ -113,6 +133,17 @@
 	.btn-secondary {
 		background: #6b7280;
 		color: white;
+	}
+
+	.btn-link-active {
+		background: #f59e0b;
+		color: white;
+		animation: pulse 1.5s infinite;
+	}
+
+	@keyframes pulse {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0.7; }
 	}
 
 	.btn-danger {

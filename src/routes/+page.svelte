@@ -4,6 +4,7 @@
 	import type { CardType } from '$lib/types';
 
 	let newCardType: CardType | null = $state(null);
+	let linkModeEnabled = $state(false);
 
 	function handleAddCard(type: CardType) {
 		newCardType = type;
@@ -12,6 +13,10 @@
 	function handleCardCreated() {
 		newCardType = null;
 	}
+
+	function handleLinkMode(enabled: boolean) {
+		linkModeEnabled = enabled;
+	}
 </script>
 
 <svelte:head>
@@ -19,8 +24,8 @@
 </svelte:head>
 
 <main>
-	<Toolbar onAddCard={handleAddCard} />
-	<Grid {newCardType} onCardCreated={handleCardCreated} />
+	<Toolbar onAddCard={handleAddCard} onLinkMode={handleLinkMode} />
+	<Grid {newCardType} onCardCreated={handleCardCreated} {linkModeEnabled} />
 </main>
 
 <style>

@@ -7,6 +7,8 @@
 	let draggedCard: CardType | null = $state(null);
 	let dragOffset = $state({ x: 0, y: 0 });
 	let gridElement: HTMLElement;
+	let linkMode = $state(false);
+	let linkSource: CardType | null = $state(null);
 
 	cardsStore.subscribe(value => {
 		cards = value;
@@ -15,9 +17,17 @@
 	interface Props {
 		newCardType: CardTypeEnum | null;
 		onCardCreated: () => void;
+		linkModeEnabled: boolean;
 	}
 
-	let { newCardType, onCardCreated }: Props = $props();
+	let { newCardType, onCardCreated, linkModeEnabled }: Props = $props();
+
+	$effect(() => {
+		linkMode = linkModeEnabled;
+		if (!linkMode) {
+			linkSource = null;
+		}
+	});
 
 	$effect(() => {
 		if (newCardType) {
@@ -33,6 +43,8 @@
 	});
 
 	function handleDragStart(card: CardType, e: PointerEvent) {
+		if (linkMode) return; // Don't drag in link mode
+		
 		draggedCard = card;
 		const target = e.currentTarget as HTMLElement;
 		const rect = target.getBoundingClientRect();
@@ -65,11 +77,76 @@
 		target.removeEventListener('pointerup', handlePointerUp);
 		draggedCard = null;
 	}
+
+	function handleCardClick(card: CardType) {
+		if (!linkMode) return;
+		
+		if (!linkSource) {
+			// First click - select source (child)
+			linkSource = card;
+		} else {
+			// Second click - link to parent
+			const child = linkSource;
+			const parent = card;
+			
+			// Validate the link
+			if (child.id === parent.id) {
+				alert('Cannot link a card to itself');
+				linkSource = null;
+				return;
+			}
+			
+			// Validate hierarchy rules
+			if (child.type === 'epic') {
+				alert('Epic cards cannot have parents');
+				linkSource = null;
+				return;
+			}
+			
+			if (child.type === 'rule' && parent.type !== 'epic') {
+				alert('Rules can only be linked to Epics');
+				linkSource = null;
+				return;
+			}
+			
+			if ((child.type === 'example' || child.type === 'question') && parent.type !== 'rule') {
+				alert('Examples and Questions can only be linked to Rules');
+				linkSource = null;
+				return;
+			}
+			
+			// Check for circular reference
+			let currentParent = parent;
+			while (currentParent) {
+				if (currentParent.id === child.id) {
+					alert('Cannot create circular reference');
+					linkSource = null;
+					return;
+				}
+				currentParent = cards.find(c => c.id === currentParent.parentId) as CardType;
+			}
+			
+			// Perform the link
+			cardsStore.linkCard(child.id, parent.id);
+			linkSource = null;
+		}
+	}
 </script>
 
 <div class="grid" bind:this={gridElement}>
+	{#if linkMode && linkSource}
+		<div class="link-indicator">
+			Linking: {linkSource.type} "{linkSource.content.substring(0, 30)}..." → Click parent card
+		</div>
+	{/if}
+	
 	{#each cards as card (card.id)}
-		<Card {card} onDragStart={handleDragStart} />
+		<Card 
+			{card} 
+			onDragStart={handleDragStart} 
+			onCardClick={handleCardClick}
+			allCards={cards}
+		/>
 	{/each}
 </div>
 
@@ -83,5 +160,19 @@
 			linear-gradient(90deg, rgba(200, 200, 200, 0.1) 1px, transparent 1px),
 			linear-gradient(rgba(200, 200, 200, 0.1) 1px, transparent 1px);
 		background-size: 20px 20px;
+	}
+
+	.link-indicator {
+		position: fixed;
+		top: 80px;
+		left: 50%;
+		transform: translateX(-50%);
+		background: #f59e0b;
+		color: white;
+		padding: 12px 24px;
+		border-radius: 8px;
+		font-weight: bold;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+		z-index: 999;
 	}
 </style>
