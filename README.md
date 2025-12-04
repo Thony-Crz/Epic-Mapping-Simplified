@@ -203,7 +203,7 @@ Alternatively, you can use the Vercel CLI:
 
 ```bash
 # Install Vercel CLI
-npm i -g vercel
+npm install --global vercel
 
 # Deploy
 vercel
